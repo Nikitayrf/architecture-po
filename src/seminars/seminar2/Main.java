@@ -17,7 +17,7 @@ public class Main {
         fabricList.add( new ArtifactGenerator() );
 
         for (int i = 0; i < 20; i++) {
-            int index = Math.abs( rnd.nextInt(5));
+            int index = Math.abs( rnd.nextInt(fabricList.size()));
             ItemFabric fabric = fabricList.get( index );
             fabric.openReward();
         }
