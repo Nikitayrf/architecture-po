@@ -1,0 +1,209 @@
+openapi: 3.0.0  # Версия спецификации OpenAPI
+info:  # Информация об OpenAPI
+  title: Заказ на ресурсы облака  # Создание заголовка OpenApI
+  version: 0.0.1  # Версия разрабатываемого OpenAPI
+servers:  # Сервера на которые будут идти запросы
+  - url: http://localhost:8080/api/v1/  # url-адрес сервера для сапросов, используем localhost и т.к. используем http указывает порт 80 или 8080. Указываем что это имеено /api с версией /v1
+    description: Dev server  # description - тег описания. Dev server - само описание сервер
+paths:  # «Конечная точка» пути до объектов/компонент/cущности
+  /сlouds:  # Путь до списка сlouds
+    get:  # Тип get-запрос (получение от сервера)
+      summary: Метод получения списка ресурсов на облако  # Описание get-запроса
+      tags:  # Групповое имя для организации путей в интерфейсе Swagger. Swagger UI сгруппирует конечные точки под заголовками тегов.
+        - Clouds  # Сущность с которой будем взаимодействовать
+      operationId: getAllClouds  # Метод полчения списка всех облаков, вызываемый на сервере через get-запрос
+      responses:  # Ответы, варианты обработки запросов, коды
+        "200":  # Код ответа от сервера
+          description: Успешный ответ со списком ресурсов в облаке  # Описание ответа от сервера
+          content:  # Контент, что будет содержать ответ на get-запрос
+            adplicationId/json:  # Указываем, что сервера будет возвращать json-файл
+              schema:  # Описание формата возвращаемого json
+                $ref: "#/components/schemas/Clouds"  # Ссылка на возвращаемый json
+        "default":  # Код ответа от сервера по-умолчанию
+          description: Всё остальное
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:  # Тип post-запрос (отправка на сервер)
+      summary: Метод создания заказа на облако  # Описание post-запроса
+      tags:
+        - Clouds
+      operationId: createCloud  # Метод создания облака, вызываемый на сервере через post-запрос
+      requestBody:  # Детали параметра, тело запроса, то что мы хотим отвравить на сервер JSON, HTML
+        required: true  # Указание, что для метода требуется параметр Clouds
+        content:
+          adplicationId/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      responses:
+        "200":
+          description: Успешный ответ создания заказа на облако
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Clouds"
+        "400":
+          description: Ошибка, не вернуй запрос браузера клиента на сервер
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Ошибка, сервер не доступен
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "default":
+          description: Всё остальное
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /clouds/{cloud_id}:  # Путь до конкретного cloud_id в списке сlouds
+    get:
+      summary: Метод получения заказа на облако по ID
+      tags:
+        - Clouds
+      operationId: getCloudById
+      parameters:  # Параметры для post-запроса
+        - name: cloud_id  # Имя параметра. Post-запрос будети принимать параметр cloud_id, то есть id номер cloud (облака)
+          in: path  # Место параметра. Возможные значения: header, path, query, или cookie. Путь где будет происходить post-запрос.
+          required: true  # Указание, что для метода требуется параметр, в данном случает из Clouds
+          description: Идентификатор заказа облака
+          schema:
+            type: string  # Тип данных параметра
+          example: f1233n432  # Пример параметра
+      responses:
+        "200":
+          description: Успешный ответ заказа облака по ID
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Cloud"
+        "400":
+          description: Ошибка, не вернуй запрос браузера клиента на сервер
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Ошибка, сервер не доступен
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "default":
+          description: Всё остальное
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:  # Тип delete-запрос (удаление от сервера)
+      summary: Метод отмены заказа на облако по ID
+      tags:
+        - Clouds
+      operationId: cancelCloudById  # Метод удаления облака по ID, вызываемый на сервере через delete-запрос
+      parameters:
+        - name: cloud_id
+          in: path
+          required: true
+          description: Идентификатор заказа облака
+          schema:
+            type: string
+          example: f1233n432
+      responses:  # Возможные ответы на delete-запрос
+        "200":
+          description: Успешный ответ отмены заказа облака по ID
+          content:  # Контент, содержание ответа на get-запрос
+            adplicationId/json:  {}
+        "default":  # Ответ с сервера по-умолчанию
+          description: Всё остальное
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /resourses:
+    get:  # Тип get-запрос (получение от сервера)
+      summary: Метод получения свободенных ресурсов в облаке  # Описание get-запроса
+      tags:  # Групповое имя для организации путей в интерфейсе Swagger. Swagger UI сгруппирует конечные точки под заголовками тегов.
+        - Resourses  # Сущность с которой будем взаимодействовать
+      operationId: getAvailableResourses  # Метод полчения списка всех облаков, вызываемый на сервере через get-запрос
+      responses:  # Ответы, варианты обработки запросов, коды
+        "200":  # Код ответа от сервера
+          description: Успешный ответ со списком ресурсов в облаке  # Описание ответа от сервера
+          content:  # Контент, что будет содержать ответ на get-запрос
+            adplicationId/json:  # Указываем, что сервера будет возвращать json-файл
+              schema:  # Описание формата возвращаемого json
+                $ref: "#/components/schemas/Resourses"  # Ссылка на возвращаемый json
+        "400":
+          description: Ошибка, не вернуй запрос браузера клиента на сервер
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Ошибка, сервер не доступен
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "default":  # Код ответа от сервера по-умолчанию
+          description: Всё остальное
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:  # Компоненты
+  schemas:  # Схемы (сущности)
+    Cloud:  # Сущность Cloud (облако)
+      type: object  # Тип сущности Cloud - object (объект)
+      required:  # Параметры сущности Cloud. Возможности JSON-файла
+        - id_server
+        - OS
+        - RAM
+      properties: # Характеристики параметров сущности Cloud
+        OS:  # Параметр OS сущности Cloud
+          type: string  # Тип данных string параметра OS
+          enum: # Перечисление возможных значений
+            - Windows
+            - Linux
+          description: OS # Описание параметра OS
+        RAM:  # Параметр RAM сущности Cloud
+          type: string
+          example: 256  # пример, сколько памяти на нашем сервере
+          description: Количество оперативной памяти
+        id_server:  # Параметр id_server сущности Cloud
+          type: string
+          example: e54353gd # Пример, варинта записи id в id_client
+    Resourses:
+      type: object
+      required:
+        - CPU_available
+        - RAM_available
+        - HDD_available
+      properties:
+        CPU_available:
+          type: integer
+          description: Кол-во доступных ядер в облаке
+        RAM_available:
+          type: integer
+          description: Кол-во доступной оперативной памяти в облаке
+        HDD_available:
+          type: integer
+          description: Кол-во памяти HDD в облаке
+    Error:  # Сущность Error (ошибка)
+      type: object  # Тип данных сущности Error - object (объект)
+      required:  # Параметры сущности Error. Возможности JSON-файла
+        - error_code  # Параметр code - код ошибки, сущности Error
+        - error_message  # Параметр message - сообщение ошибки, сущности Error
+      properties:
+        error_code:  # Параметр code - код ошибки, сущности Error
+          type: integer  # Тип integer параметра code
+        error_message:  # Параметр message - сообщение ошибки, сущности Error
+          type: string
+    Clouds:  # Сущности Clouds - это массив Cloud-ов
+      type: array  # Тип данных сущности Clouds - array (список)
+      items:  # Из чего будет состоит array (массив/список)
+        $ref: "#/components/schemas/Cloud"  # Список array будет состаять из серверов (облаков), т.е. из элементов Cloud
